@@ -19,9 +19,9 @@ def connect_database():
             user = os.environ.get('PG_USER'),
             password = os.environ.get('PG_PASSWORD'),
             host = os.environ.get('PG_HOST'),
-            port = os.environ.get('PG_PORT'), 
+            port = os.environ.get('PG_PORT'),
         )
-    
+
         connection.autocommit = True
         cursor = connection.cursor()
         cursor.execute('SELECT %s as connected;', ('Connection to DB successful!',))
@@ -32,12 +32,11 @@ def connect_database():
         print(f'Connection to DB failed!:\n{err}')
 
 
-def create_and_execute_query(interfaces):
+def create_and_execute_query(interfaces, connection, cursor):
     """
     Creates a table schema, loops through interfaces configuration data,
     extracts relevant information and inserts that data into the table.
     """
-    connection, cursor = connect_database()
 
     createTableQuery = """
         CREATE TABLE IF NOT EXISTS device_configuration(
@@ -78,15 +77,16 @@ def create_and_execute_query(interfaces):
                     try:
                         cursor.execute("""
                             INSERT INTO device_configuration
-                            (name, description, config, port_channel_id, max_frame_size, connection, type, infra_type) 
+                            (name, description, config, port_channel_id, max_frame_size, connection, type, infra_type)
                             VALUES(%s, %s, %s, %s, %s, %s, %s, %s)
-                            """, 
+                            """,
                             (name, description, config, port_channel_id, max_frame_size, None, None, None)
                         )
                     except Exception as err:
                         print(err)
 
+if __name__ == "__main__":
+    interfaces = read_data()
+    connection, cursor = connect_database()
+    create_and_execute_query(interfaces, connection, cursor)
     connection.close()
-
-interfaces = read_data()
-create_and_execute_query(interfaces)

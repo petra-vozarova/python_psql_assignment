@@ -2,7 +2,7 @@
 
 ## Pre-requisites
 
-- Environment with `Python3.6` installed, along with `PostgreSQL 10+` 
+- Environment with `Python3.6` installed, along with `PostgreSQL 10+`
 - Python libraries: `psycopg2` (or `psycopg2-binary`) and `dotenv`
 - Data file `configClear_v2.json`
 
@@ -37,3 +37,13 @@ Then run the code using
 python main.py
 ```
 
+## Testing
+
+To run tests go to the main directory and run
+```
+pytest -v
+```
+
+The testing checks some basic information, such as wether a correct number of entries have been created, or wether the input file contains expected interfaces.
+
+Each test creates its own instance of a database, so it is run in a complete isolation.
